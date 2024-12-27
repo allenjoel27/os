@@ -1,0 +1,49 @@
+#include <stdio.h>
+
+typedef struct {
+    int pid, bt, wt, tat, remaining_bt;
+} Process;
+
+int main() {
+    int n, i, time_quantum, t = 0, completed = 0;
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    Process p[n];
+    for (i = 0; i < n; i++) {
+        printf("Enter burst time for process %d: ", i + 1);
+        p[i].pid = i + 1;
+        scanf("%d", &p[i].bt);
+        p[i].remaining_bt = p[i].bt;
+        p[i].wt = 0;
+    }
+
+    printf("Enter time quantum: ");
+    scanf("%d", &time_quantum);
+
+    while (completed < n) {
+        for (i = 0; i < n; i++) {
+            if (p[i].remaining_bt > 0) {
+                if (p[i].remaining_bt <= time_quantum) {
+                    t += p[i].remaining_bt;
+                    p[i].remaining_bt = 0;
+                    p[i].tat = t;
+                    p[i].wt = p[i].tat - p[i].bt;
+                    completed++;
+                } else {
+                    t += time_quantum;
+                    p[i].remaining_bt -= time_quantum;
+                }
+            }
+        }
+    }
+
+    // Display results
+    printf("\nPID\tBT\tWT\tTAT\n");
+    for (i = 0; i < n; i++) {
+        printf("%d\t%d\t%d\t%d\n", p[i].pid, p[i].bt, p[i].wt, p[i].tat);
+    }
+
+    return 0;
+}
